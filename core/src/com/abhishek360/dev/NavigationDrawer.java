@@ -11,16 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Align;
 
 
-public class NavigationDrawer extends Table
-{
-
-    // only visual window and using scissor to avoid GPU to draw out of left-edge screen.
+public class NavigationDrawer extends Table {
     private float areaWidth;
     private float areaHeight;
     private final Rectangle areaBounds = new Rectangle();
     private final Rectangle scissorBounds = new Rectangle();
 
-    private int startPosX=0,startPosY=0;
+    private int startPosX = 0, startPosY = 0;
 
     // it's revealed with (widthStart = 60F;) when the user swipes a finger from the left edge of the screen with start touch.
     private float widthStart = 40f;
@@ -43,36 +40,30 @@ public class NavigationDrawer extends Table
     private boolean auto = false;
     private boolean enableDrag = true;
 
-    public void setAreaWidth(float areaWidth)
-    {
+    public void setAreaWidth(float areaWidth) {
         this.areaWidth = areaWidth;
     }
 
-    public void setAreaHeight(float areaHeight)
-    {
+    public void setAreaHeight(float areaHeight) {
         this.areaHeight = areaHeight;
     }
 
-    public NavigationDrawer(float width, float height,float startPosX,float startPosY)
-    {
+    public NavigationDrawer(float width, float height, float startPosX, float startPosY) {
         this.areaWidth = width;
         this.areaHeight = height;
-        this.startPosX=(int) startPosX;
-        this.startPosY=(int) startPosY;
+        this.startPosX = (int) startPosX;
+        this.startPosY = (int) startPosY;
         this.setSize(width, height);
     }
 
     private NavigationDrawerListener listener;
 
-    public interface NavigationDrawerListener
-    {
+    public interface NavigationDrawerListener {
         void moving(Vector2 clamp);
     }
 
-    public void setNavigationDrawerListener(NavigationDrawerListener listener)
-    {
+    public void setNavigationDrawerListener(NavigationDrawerListener listener) {
         this.listener = listener;
-
     }
 
     public void setWidthStartDrag(float widthStartDrag) {
@@ -97,15 +88,15 @@ public class NavigationDrawer extends Table
         this.speed = speed;
     }
 
-    public void showManually(boolean show)
-    {
+    public void showManually(boolean show) {
         this.showManually(show, speed);
     }
 
     @Override
-    public void draw(Batch batch, float alpha)
-    {
-        getStage().calculateScissors(areaBounds.set(startPosX , startPosY, areaWidth, areaHeight), scissorBounds);
+    public void draw(Batch batch, float alpha) {
+        getStage().calculateScissors(
+                areaBounds.set(startPosX, startPosY, areaWidth, areaHeight), scissorBounds
+        );
         batch.flush();
         if (ScissorStack.pushScissors(scissorBounds)) {
             super.draw(batch, alpha);
@@ -115,8 +106,7 @@ public class NavigationDrawer extends Table
 
         if (isTouched() && inputX() < stgToScrX(this.getWidth(), startPosX).x) {
             auto = false;
-            if (!isTouched)
-            {
+            if (!isTouched) {
                 isTouched = true;
                 first.set(scrToStgX(inputX(), startPosY));
             }
@@ -137,13 +127,9 @@ public class NavigationDrawer extends Table
             noDrag();
 
         updatePosition();
-
         moving();
-
         rotateMenuButton();
-
         fadeBackground();
-
     }
 
     private boolean isMax = false;
@@ -166,22 +152,19 @@ public class NavigationDrawer extends Table
                 listener.moving(clamp);
             }
         }
-
     }
 
-    private void updatePosition()
-    {
+    private void updatePosition() {
         clamp.set(MathUtils.clamp(end.x, 0, this.getWidth()), 0);
-        this.setPosition(startPosX+clamp.x, startPosY, Align.bottomRight);
+        this.setPosition(startPosX + clamp.x, startPosY, Align.bottomRight);
     }
 
     private void dragging() {
         if (isStart)
-            end.set(scrToStgX(startPosX+inputX(), startPosY));
+            end.set(scrToStgX(startPosX + inputX(), startPosY));
 
         if (isBack && last.x < -widthBack)
-            end.set(last.add(startPosX+this.getWidth() + widthBack, startPosY));
-
+            end.set(last.add(startPosX + this.getWidth() + widthBack, startPosY));
     }
 
     private void backDrag() {
@@ -200,8 +183,7 @@ public class NavigationDrawer extends Table
         }
     }
 
-    private void noDrag()
-    {
+    private void noDrag() {
         isStart = false;
         isBack = false;
         isTouched = false;
@@ -209,30 +191,25 @@ public class NavigationDrawer extends Table
         // set end of X to updated X from clamp
         end.set(clamp);
 
-        if (auto)
-        {
+        if (auto) {
             if (show)
-                end.add(startPosX+speed, startPosY); // player want to OPEN drawer
+                end.add(startPosX + speed, startPosY); // player want to OPEN drawer
             else
-                end.sub(startPosX+speed, startPosY); // player want to CLOSE drawer
-        }
-        else
-            {
+                end.sub(startPosX + speed, startPosY); // player want to CLOSE drawer
+        } else {
             if (toOpen())
-                end.add(startPosX+speed, startPosY); // player want to OPEN drawer
+                end.add(startPosX + speed, startPosY); // player want to OPEN drawer
             else if (toClose())
-                end.sub(startPosX+speed, startPosY); // player want to CLOSE drawer
+                end.sub(startPosX + speed, startPosY); // player want to CLOSE drawer
         }
 
     }
 
-    private void hintToOpen()
-    {
+    private void hintToOpen() {
         end.set(stgToScrX(widthStart, startPosY));
     }
 
-    public boolean isCompletelyClosed()
-    {
+    public boolean isCompletelyClosed() {
         return clamp.x == 0;
     }
 
@@ -304,5 +281,4 @@ public class NavigationDrawer extends Table
         this.isFadeBackground = true;
         this.maxFade = maxFade;
     }
-
 }

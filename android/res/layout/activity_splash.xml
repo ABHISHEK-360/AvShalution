@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".SplashActivity"
     android:gravity="center"
+    android:background="#ffffff"
     android:orientation="horizontal">
 
     <ImageView
@@ -14,11 +15,7 @@
         android:layout_width="540dp"
         android:layout_gravity="center"
         android:layout_height="170dp"
-
-
         android:scaleType="fitXY"
         android:src="@drawable/shalution_logo"/>
-
-
 
 </LinearLayout>
